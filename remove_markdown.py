@@ -1,11 +1,10 @@
 # this removes markdown formatting that LEGA outputs
 # @author: Jasmine Klein
-# @version: 1.0.0
+# @version: 1.1
 
 import re
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk
 
 class Window():
 
@@ -23,6 +22,7 @@ class Window():
         self.vscroll = tk.Scrollbar(self.window, orient=tk.VERTICAL)
         self.hscroll = tk.Scrollbar(self.window, orient=tk.HORIZONTAL)
 
+        # initalize non reactive components
         self.setup()
 
         # textbox that user inputs the raw lega data into 
@@ -45,7 +45,6 @@ class Window():
 
         self.start()
 
-
     # set visuals and static components
     def setup(self):
         # like a textbox for instructions lowkey
@@ -56,7 +55,7 @@ class Window():
 
     # handler for buttons
     def button_state(self, button):
-        # button logic...duh
+        # button logic...duh lol
         if button.cget("state") == "normal":
             button.configure(state="disabled")
         else:
@@ -70,17 +69,23 @@ class Window():
         self.__init__()
     
     def __get_input__(self):
-
+        # get text from user input from left textbox
         self.OLD_TEXT = self.input_text.get(1.0, "end-1c")
+        
+        # disable format button
         if self.OLD_TEXT != "":
             self.button_state(self.format_button)
 
+        # removes all markdown syntax for headings, bold, italics, bullet list
         text = reformat(str(self.OLD_TEXT))
-        sections = text.split('   ')
+
+        sections = text.split('   ') # remove indent spacing
         for section in sections:
-            newline = section.split('\n')
+            newline = section.split('\n') # break up new lines
             for x in newline:
-                self.NEW_TEXT += x.lstrip() + '\n'
+                self.NEW_TEXT += x.lstrip() + '\n' # remove leading whitespaces, add newline
+        
+        # display the reformatted text in right text box
         self.__set_output__(self.NEW_TEXT)
 
     def __set_output__(self, output):
@@ -88,9 +93,8 @@ class Window():
         if output is None:
             output = self.NEW_TEXT
 
-        if output:
-            self.button_state(self.format_button)
-            self.output_text.insert("1.0",output)
+        self.button_state(self.format_button)
+        self.output_text.insert("1.0", output)
 
 
 # returns the input string without any formatting
